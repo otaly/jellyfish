@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Home スナップショットテスト 1`] = `
+<div>
+  <main
+    class="flex min-h-dvh flex-col items-center p-16"
+  >
+    <h1>
+      Hello, World!
+    </h1>
+  </main>
+</div>
+`;
