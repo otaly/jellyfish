@@ -1,0 +1,25 @@
+name: API CI
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - api/**
+
+jobs:
+  unit_test:
+    name: Unit test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./api
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: api
+
+      - name: Run tests
+        run: cargo test
+
+      - name: Lint with clippy
+        run: cargo clippy --all-targets --all-features
