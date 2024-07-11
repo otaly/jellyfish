@@ -25,6 +25,12 @@ jobs:
         with:
           node-version: 20
 
+      - name: Set up node cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-package-lock-${{ hashFiles('package-lock.json') }}
+
       - name: Install dependencies
         run: npm ci
 
