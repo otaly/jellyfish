@@ -1,4 +1,4 @@
-name: Web CI
+name: Web CI/CD
 
 on:
   workflow_dispatch:
@@ -39,8 +39,8 @@ jobs:
       - name: Run tests
         run: npm test
 
-  build_and_publish:
-    name: Build and Publish
+  build_and_deploy:
+    name: Build and Deploy
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -50,6 +50,7 @@ jobs:
       GAR_LOCATION: asia-northeast1
       REPOSITORY: jellyfish-web
       SERVICE: jellyfish-web
+      REGION: asia-northeast1
 
     steps:
       - uses: actions/checkout@v4
@@ -82,7 +83,13 @@ jobs:
           push: true
           tags: ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE }}:${{ github.sha }}
 
-      - name: Check outputs
-        run: |
-          echo imageid ${{ steps.build-image.outputs.imageid }}
-          echo metadata ${{ steps.build-image.outputs.metadata }}
+      - name: Deploy to Cloud Run
+        id: deploy
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: ${{ env.SERVICE }}
+          region: ${{ env.REGION }}
+          image: ${{ steps.build-image.outputs.metadata.image.name }}
+
+      - name: Show Output
+        run: echo ${{ steps.deploy.outputs.url }}
