@@ -1,0 +1,17 @@
+{
+  "folders": [
+    {
+      "name": "root",
+      "path": "."
+    },
+    {
+      "path": "web"
+    },
+    {
+      "path": "api"
+    }
+  ],
+  "settings": {
+    "jest.disabledWorkspaceFolders": ["root", "api"]
+  }
+}
