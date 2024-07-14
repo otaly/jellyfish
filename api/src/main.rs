@@ -15,7 +15,7 @@ async fn hello(params: Query<Params>) -> (StatusCode, Json<Greeting>) {
         StatusCode::OK,
         Json(Greeting {
             greeting: match params {
-                Params { name: Some(name) } => format!("Hello, World! {}!!", name).into(),
+                Params { name: Some(name) } => format!("Hello, World! {}!!", name),
                 Params { name: None } => "Hello, World!".into(),
             },
         }),

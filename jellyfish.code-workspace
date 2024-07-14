@@ -12,6 +12,7 @@
     }
   ],
   "settings": {
-    "jest.disabledWorkspaceFolders": ["root", "api"]
+    "jest.disabledWorkspaceFolders": ["root", "api"],
+    "rust-analyzer.check.command": "clippy"
   }
 }
