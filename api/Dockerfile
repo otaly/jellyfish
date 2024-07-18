@@ -1,4 +1,4 @@
-FROM rust:1.79.0-slim-bullseye AS build
+FROM rust:1.79.0-slim-bookworm AS build
 
 WORKDIR /build
 
@@ -10,10 +10,11 @@ RUN mkdir src \
 COPY src src
 RUN cargo build --locked --release
 
-FROM debian:bullseye-slim
+FROM debian:bookworm-slim
 
 RUN adduser --system --uid 1001 appuser
 USER appuser
+EXPOSE 4000
 
 COPY --from=build /build/target/release/jellyfish-api /bin/app
 CMD ["/bin/app"]
