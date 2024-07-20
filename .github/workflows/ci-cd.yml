@@ -19,11 +19,17 @@ jobs:
   api-deploy:
     name: API Deploy
     needs: api-ci
+    permissions:
+      id-token: write
+      contents: read
     uses: ./.github/workflows/api-deploy.yml
 
   web-deploy:
     name: Web Deploy
     needs: [web-ci, api-deploy]
+    permissions:
+      id-token: write
+      contents: read
     uses: "./.github/workflows/web-deploy.yml"
     with:
       api-url: ${{ needs.api-deploy.outputs.url }}
