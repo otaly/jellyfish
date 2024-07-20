@@ -1,0 +1,24 @@
+name: Jellyfish CI/CD
+
+on: [push, workflow_dispatch]
+
+jobs:
+  web-ci:
+    name: Web CI
+    uses: ./.github/workflows/web-ci.yml
+
+  api-ci:
+    name: API CI
+    uses: ./.github/workflows/api-ci.yml
+  
+  api-deploy:
+    name: API Deploy
+    needs: api-ci
+    uses: ./.github/workflows/api-deploy.yml
+
+  web-deploy:
+    name: Web Deploy
+    needs: [web-ci, api-deploy]
+    uses: "./.github/workflows/web-deploy.yml"
+    with:
+      api-url: ${{ needs.api-deploy.outputs.url }}

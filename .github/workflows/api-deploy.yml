@@ -1,55 +1,31 @@
-name: API CI/CD
+name: API Deploy
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - api/**
+  workflow_call:
+    outputs:
+      url:
+        description: API URL
+        value: ${{ jobs.build_and_deploy.outputs.url }}
 
 defaults:
   run:
     working-directory: ./api
 
 jobs:
-  unit_test:
-    name: Unit test
-    env:
-      RUSTFLAGS: "-Dwarnings"
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          sparse-checkout: api
-
-      - name: Set up cargo cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-
-      - name: Run tests
-        run: cargo test
-
-      - name: Lint with clippy
-        run: cargo clippy --all-targets --all-features
-
   build_and_deploy:
     name: Build and Deploy
     runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: read
-    needs: [unit_test]
     env:
       GAR_LOCATION: asia-northeast1
       REPOSITORY: jellyfish-api
       SERVICE: jellyfish-api
       REGION: asia-northeast1
+    outputs:
+      url: ${{ steps.deploy.outputs.url }}
 
     steps:
       - uses: actions/checkout@v4
