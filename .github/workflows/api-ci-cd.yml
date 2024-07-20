@@ -1,4 +1,4 @@
-name: API CI
+name: API CI/CD
 
 on:
   workflow_dispatch:
@@ -49,6 +49,7 @@ jobs:
       GAR_LOCATION: asia-northeast1
       REPOSITORY: jellyfish-api
       SERVICE: jellyfish-api
+      REGION: asia-northeast1
 
     steps:
       - uses: actions/checkout@v4
@@ -88,3 +89,14 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Deploy to Cloud Run
+        id: deploy
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: ${{ env.SERVICE }}
+          region: ${{ env.REGION }}
+          image: ${{ steps.meta.outputs.tags }}
+
+      - name: Show Output
+        run: echo ${{ steps.deploy.outputs.url }}
