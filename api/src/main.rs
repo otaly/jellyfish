@@ -1,11 +1,22 @@
+use std::{env, net::SocketAddr};
+
 use axum::{extract::Query, http::StatusCode, routing::get, Json, Router};
+use dotenvy::dotenv;
 use serde::{Deserialize, Serialize};
 
 #[tokio::main]
 async fn main() {
+    dotenv().ok();
+
     let app = Router::new().route("/hello", get(hello));
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:4000").await.unwrap();
+    let addr = SocketAddr::from((
+        [0, 0, 0, 0],
+        env::var("PORT").expect("PORT not set").parse().unwrap(),
+    ));
+    let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
+    println!("listening on {}", listener.local_addr().unwrap());
+
     axum::serve(listener, app).await.unwrap();
 }
 
